@@ -18,9 +18,10 @@
             </div>
           </transition>
         </div>
-        <!-- Mobile: hamburger opens sidebar -->
+        <!-- Mobile: button shows username and opens sidebar -->
         <button class="hamburger" @click="sidebar = true" aria-label="Abrir menú" >
-          <span></span><span></span><span></span>
+          <span class="user-mobile-name">{{ usernameDisplay }}</span>
+          <span class="bars"><span></span><span></span><span></span></span>
         </button>
       </div>
       <div v-else class="stack" style="gap:12px;">
@@ -45,7 +46,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, onMounted, onBeforeUnmount } from 'vue'
+import { computed, ref, onMounted, onBeforeUnmount, watch } from 'vue'
 import { useAuthStore } from './../../stores/auth'
 const auth = useAuthStore()
 const open = ref(false)
@@ -62,7 +63,18 @@ function onDocClick(e: MouseEvent) {
 }
 onMounted(() => document.addEventListener('click', onDocClick))
 onBeforeUnmount(() => document.removeEventListener('click', onDocClick))
-async function onLogout() { await auth.logout(); navigateTo('/') }
+async function onLogout() {
+  open.value = false
+  sidebar.value = false
+  await auth.logout()
+  navigateTo('/')
+}
+
+// Close menus/sidebars when auth token changes (e.g., auto-logout on 401)
+watch(() => auth.token, () => {
+  open.value = false
+  sidebar.value = false
+})
 </script>
 
 <style scoped>
@@ -84,16 +96,18 @@ async function onLogout() { await auth.logout(); navigateTo('/') }
 .dropdown .btn { width:100%; text-align:center; border-radius:10px; }
 
 /* Hamburger only on small screens */
-.hamburger { display:none; width:36px; height:36px; background:#1b2130; border:1px solid #293140; border-radius:8px; align-items:center; justify-content:center; gap:3px; }
-.hamburger span { display:block; width:18px; height:2px; background:#e6e6e6; }
+.hamburger { display:none; height:36px; background:#1b2130; border:1px solid #293140; border-radius:8px; align-items:center; justify-content:center; gap:8px; padding:0 10px; }
+.hamburger .bars span { display:block; width:18px; height:2px; background:#e6e6e6; }
+.hamburger .bars { display:inline-flex; flex-direction:column; gap:3px; }
+.hamburger .user-mobile-name { font-weight:600; color:#e6e6e6; max-width:110px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 @media (max-width: 760px) {
   .user-menu-btn { display:none; }
   .hamburger { display:inline-flex; }
 }
 
 /* Sidebar */
-.backdrop { position: fixed; inset:0; background: rgba(0,0,0,.45); z-index: 90; }
-.sidebar { position: fixed; top:0; right:-320px; width: 280px; height:100%; background:#0f131b; border-left:1px solid #223; z-index: 100; transition: right .2s ease; display:flex; flex-direction:column; }
+.backdrop { position: fixed; inset:0; background: rgba(0,0,0,.45); z-index: 2200; }
+.sidebar { position: fixed; top:0; right:-320px; width: 280px; height:100%; background:#0f131b; border-left:1px solid #223; z-index: 2300; transition: right .2s ease; display:flex; flex-direction:column; }
 .sidebar.on { right:0; }
 .sidebar-header { padding: 16px; font-weight: 700; border-bottom:1px solid #223; }
 .sidebar-nav { display:flex; flex-direction:column; padding: 12px; gap:8px; }

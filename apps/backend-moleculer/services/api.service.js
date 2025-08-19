@@ -152,20 +152,6 @@ module.exports = {
 	methods: {
 
 		/**
-		 * Basic Auth: set BASIC_USER & BASIC_PASS env to enable.
-		 */
-		_parseBasicAuth(header) {
-			if (!header || !header.startsWith("Basic ")) return null;
-			try {
-				const b64 = header.slice(6);
-				const raw = Buffer.from(b64, "base64").toString("utf8");
-				const idx = raw.indexOf(":");
-				if (idx === -1) return null;
-				return { username: raw.slice(0, idx), password: raw.slice(idx + 1) };
-			} catch (e) { return null; }
-		},
-
-		/**
 		 * Authenticate the request. It check the `Authorization` token value in the request header.
 		 * Check the token value & resolve the user by the token.
 		 * The resolved user will be available in `ctx.meta.user`
@@ -179,17 +165,6 @@ module.exports = {
 		 */
 		async authenticate(ctx, route, req) {
 			const header = req.headers["authorization"]; 
-			const basic = this._parseBasicAuth(header);
-			const cfgUser = process.env.BASIC_USER;
-			const cfgPass = process.env.BASIC_PASS;
-			// Try Basic auth first if configured
-			if (cfgUser && cfgPass && basic) {
-				if (basic.username === cfgUser && basic.password === cfgPass) {
-					ctx.meta.user = { id: cfgUser };
-					return ctx.meta.user;
-				}
-				throw new ApiGateway.Errors.UnAuthorizedError(ApiGateway.Errors.ERR_INVALID_TOKEN);
-			}
 			// Try Bearer token via auth service
 			if (header && typeof header === 'string' && header.startsWith('Bearer ')) {
 				try {

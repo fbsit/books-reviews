@@ -19,7 +19,6 @@ Aplicación full‑stack para buscar libros, gestionar una biblioteca personal y
 - Backend
   - `MONGO_URI` (por defecto: `mongodb://127.0.0.1:27017/booksreviews`)
   - `PORT` (por defecto: `3001`)
-  - Opcional Basic Auth para pruebas: `BASIC_USER`, `BASIC_PASS`
 - Frontend
   - `NUXT_PUBLIC_API_BASE` (por defecto: `http://localhost:3001`)
 
@@ -42,7 +41,7 @@ yarn dev
 
 El frontend se abrirá en `http://localhost:3000` y consumirá la API en `http://localhost:3001/api`.
 
-### Autenticación
+### Autenticación (solo Bearer)
 
 - Registro: `POST /api/auth/register` (usuario/contraseña)
 - Login: `POST /api/auth/login` → devuelve `{ token, user }`

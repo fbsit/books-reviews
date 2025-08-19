@@ -2,6 +2,10 @@
   <main class="container wide">
     <section class="hero">
       <img src="/banner.svg" alt="Nexo Books" class="hero-img" />
+      <div class="hero-overlay">
+        <h2 class="hero-title">Descubre, califica y guarda tus libros favoritos</h2>
+        <p class="hero-sub">Encuentra títulos populares y construye tu biblioteca personal.</p>
+      </div>
     </section>
     <section class="stack col" style="align-items:center;">
       <SearchBox
@@ -57,10 +61,21 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.hero { width: 100%; display: flex; justify-content: center; }
+.hero { position:relative; width: 100%; display: flex; justify-content: center; }
 .hero-img { width: 100%; max-width: 1100px; height: auto; border-radius: 16px; border: 1px solid #223; }
+.hero-overlay { position:absolute; inset:0; display:none; flex-direction:column; justify-content:center; align-items:center; padding: 16px; text-align:center; }
+.hero-title { margin:0; color:#ffffff; text-shadow: 0 2px 10px rgba(0,0,0,.4); font-size: 28px; }
+.hero-sub { margin-top:6px; color:#e6e6e6; text-shadow: 0 2px 8px rgba(0,0,0,.35); font-size: 14px; }
+@media (max-width: 640px) {
+  /* En mobile, el texto va debajo de la imagen para no solaparse */
+  .hero { flex-direction: column; align-items: center; }
+  .hero-img { display: none; }
+  .hero-overlay { display:flex; position: static; padding: 10px 12px; }
+  .hero-title { font-size: 20px; color:#e6e6e6; text-shadow: none; }
+  .hero-sub { font-size: 12px; color:#9aa4b2; text-shadow: none; }
+}
 .books-grid { display:grid; gap:16px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
-.search-info { color:#9aa4b2; width:100%; max-width:1100px; min-width: 500px; text-align:left; }
+.search-info { color:#9aa4b2; width:100%; max-width:1100px; text-align:left; }
 @media (max-width: 1200px) { .books-grid { grid-template-columns: repeat(3, minmax(0,1fr)); } }
 @media (max-width: 900px) { .books-grid { grid-template-columns: repeat(2, minmax(0,1fr)); } }
 @media (max-width: 600px) { .books-grid { grid-template-columns: repeat(1, minmax(0,1fr)); } }

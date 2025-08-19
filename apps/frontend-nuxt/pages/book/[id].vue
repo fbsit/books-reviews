@@ -122,7 +122,7 @@ onMounted(async () => {
   }
   // Fallback to last search result
   book.value = search.results.find(r => r.id === id) || null
-  // If not found anywhere, fetch detail from backend
+  // Fetch detail from backend y fusionar preservando autor/año del resultado de búsqueda si existen
   if (!book.value) {
     try {
       const config = useRuntimeConfig()
@@ -137,6 +137,26 @@ onMounted(async () => {
     } catch (e: any) {
       error.value = e?.message || 'No se pudo cargar el libro'
     }
+  } else {
+    // Ya tenemos info desde la búsqueda; intenta complementar con detalle sin perder autor/año
+    try {
+      const config = useRuntimeConfig()
+      const { $apiFetch } = useNuxtApp() as any
+      const data = await $apiFetch(`${config.public.apiBase}/api/books/detail/${encodeURIComponent(id)}`) as any
+      if (data?.internalCoverUrl) {
+        const abs = `${config.public.apiBase}${data.internalCoverUrl}`
+        data.coverUrl = abs
+        data.internalCoverUrl = abs
+      }
+      const current = book.value || {}
+      book.value = {
+        ...data,
+        author: data?.author || (current as any).author,
+        year: data?.year || (current as any).year,
+        coverUrl: data?.coverUrl || (current as any).coverUrl,
+        internalCoverUrl: data?.internalCoverUrl || (current as any).internalCoverUrl
+      } as any
+    } catch {}
   }
 })
 

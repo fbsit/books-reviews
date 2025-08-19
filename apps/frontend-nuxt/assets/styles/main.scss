@@ -77,11 +77,23 @@ button { cursor: pointer; }
   position: fixed;
   right: 16px;
   bottom: 16px;
-  background: #0f131b;
-  color: $text;
-  border: 1px solid #223;
-  padding: 12px 14px;
-  border-radius: 10px;
+  background: #ffffff;
+  color: $bg;
+  border: 1px solid #e5e7eb;
+  padding: 18px 22px;
+  border-radius: 14px;
+  font-size: 18px;
+  font-weight: 700;
+  border-left: 5px solid $primary;
+  box-shadow: 0 16px 36px rgba(0,0,0,.55);
+  z-index: 1000;
+  pointer-events: none;
+  animation: toast-in .22s ease-out;
+}
+
+@keyframes toast-in {
+  from { transform: translateY(10px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
 }
 
 

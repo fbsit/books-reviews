@@ -30,9 +30,12 @@ In the terminal, try the following commands:
 
 
 ## Services
-- **api**: API Gateway services
-- **greeter**: Sample service with `hello` and `welcome` actions.
-- **products**: Sample DB service. To use with MongoDB, set `MONGO_URI` environment variables and install MongoDB adapter with `npm i moleculer-db-adapter-mongo`.
+- **api**: API Gateway services (solo Bearer token)
+- **auth**: Login/Logout/Me con token opaco en memoria
+- **users**: Registro y verificación de credenciales
+- **books**: Búsqueda OpenLibrary y biblioteca por usuario
+- **searches**: Historial de búsquedas
+- **docs**: OpenAPI JSON + UI
 
 ## Mixins
 - **db.mixin**: Database access mixin for services. Based on [moleculer-db](https://github.com/moleculerjs/moleculer-db#readme)
