@@ -47,7 +47,7 @@
                 <span v-if="submitting" class="mini-spinner" />
                 {{ submitting ? 'Actualizando…' : 'Actualizar' }}
               </button>
-              <button class="btn danger" @click="onDelete">Eliminar</button>
+              <button class="btn danger" @click="openDeleteModal">Eliminar</button>
             </template>
             <button v-else-if="isAuthenticated" class="btn" :disabled="submitting || !isValid" @click="onSave" :aria-busy="submitting ? 'true' : 'false'">
               <span v-if="submitting" class="mini-spinner" />
@@ -63,6 +63,15 @@
     
 
     <div v-if="toast" class="toast">Guardado con éxito</div>
+    <ConfirmModal
+      :open="confirmOpen"
+      title="Eliminar libro"
+      message="¿Eliminar este libro de tu biblioteca? Esta acción no se puede deshacer."
+      confirm-text="Eliminar"
+      cancel-text="Cancelar"
+      @confirm="confirmDelete"
+      @cancel="confirmOpen = false"
+    />
   </main>
   <main v-else class="container">
     <p class="text-muted">Cargando…</p>
@@ -76,6 +85,7 @@ import { useSearchStore, type BookSearchItem } from './../../stores/search'
 import { useLibraryStore } from './../../stores/library'
 import { useAuthStore } from './../../stores/auth'
 import StarRating from '../../components/atoms/StarRating.vue'
+import ConfirmModal from '../../components/molecules/ConfirmModal.vue'
 
 const route = useRoute()
 const id = decodeURIComponent(route.params.id as string)
@@ -94,6 +104,7 @@ const displayRating = computed(() => {
 const error = ref<string | null>(null)
 const submitting = ref(false)
 const toast = ref(false)
+const confirmOpen = ref(false)
 
 const isValid = computed(() => review.value.length <= 500 && ratingInput.value >= 1 && ratingInput.value <= 5)
 const existsInLibrary = computed(() => !!library.books.find(b => b.id === id))
@@ -212,8 +223,7 @@ async function onUpdate() {
   try {
     await library.updateBook(id, { review: review.value, rating: ratingInput.value })
     await library.fetchLibrary()
-    toast.value = true
-    setTimeout(() => { toast.value = false }, 2000)
+    navigateTo('/library')
   } catch (e: any) {
     error.value = e?.message || 'No se pudo actualizar'
   } finally {
@@ -221,15 +231,15 @@ async function onUpdate() {
   }
 }
 
-async function onDelete() {
-  const ok = window.confirm('¿Eliminar este libro de tu biblioteca?')
-  if (!ok) return
+function openDeleteModal() { confirmOpen.value = true }
+
+async function confirmDelete() {
   try {
     await library.deleteBook(id)
     navigateTo('/library')
   } catch (e: any) {
     error.value = e?.message || 'No se pudo eliminar'
-  }
+  } finally { confirmOpen.value = false }
 }
 </script>
 

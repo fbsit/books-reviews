@@ -19,7 +19,7 @@
           </transition>
         </div>
         <!-- Mobile: button shows username and opens sidebar -->
-        <button class="hamburger" @click="sidebar = true" aria-label="Abrir menú" >
+        <button class="hamburger" @click="openUserSidebar" aria-label="Abrir menú" >
           <span class="user-mobile-name">{{ usernameDisplay }}</span>
           <span class="bars"><span></span><span></span><span></span></span>
         </button>
@@ -31,11 +31,14 @@
     </div>
 
     <!-- Mobile sidebar -->
-    <div v-if="sidebar" class="backdrop" @click="sidebar=false"></div>
-    <aside class="sidebar" :class="{ on: sidebar }" role="dialog" aria-modal="true">
-      <div class="sidebar-header">User: {{ usernameDisplay }}</div>
+    <div v-if="ui.activeSidebar === 'user'" class="backdrop" @click="ui.closeSidebar()"></div>
+    <aside v-if="ui.activeSidebar === 'user'" class="sidebar on" role="dialog" aria-modal="true">
+      <div class="sidebar-header">
+        <span>User: {{ usernameDisplay }}</span>
+        <button class="close-btn" @click="ui.closeSidebar()">Cerrar</button>
+      </div>
       <nav class="sidebar-nav">
-        <NuxtLink to="/library" class="side-link" @click="sidebar=false">Mi biblioteca</NuxtLink>
+        <NuxtLink to="/library" class="side-link" @click="ui.closeSidebar()">Mi biblioteca</NuxtLink>
         <button class="side-link danger" @click="onLogout">Cerrar sesión</button>
       </nav>
     </aside>
@@ -48,7 +51,9 @@
 <script setup lang="ts">
 import { computed, ref, onMounted, onBeforeUnmount, watch } from 'vue'
 import { useAuthStore } from './../../stores/auth'
+import { useUiStore } from './../../stores/ui'
 const auth = useAuthStore()
+const ui = useUiStore()
 const open = ref(false)
 const menuRef = ref<HTMLElement | null>(null)
 const sidebar = ref(false)
@@ -66,6 +71,7 @@ onBeforeUnmount(() => document.removeEventListener('click', onDocClick))
 async function onLogout() {
   open.value = false
   sidebar.value = false
+  ui.closeSidebar()
   await auth.logout()
   navigateTo('/')
 }
@@ -74,11 +80,16 @@ async function onLogout() {
 watch(() => auth.token, () => {
   open.value = false
   sidebar.value = false
+  ui.closeSidebar()
 })
+
+function openUserSidebar() {
+  ui.openSidebar('user')
+}
 </script>
 
 <style scoped>
-.site-header { padding: 20px 0; position: relative; z-index: 300; }
+.site-header { padding: 14px 0; position: sticky; top:0; backdrop-filter: saturate(140%) blur(8px); background: rgba(11,14,20,.75); z-index: 300; border-bottom: 1px solid rgba(124,92,255,.18); }
 .header-wrap { display:flex; align-items:center; justify-content: space-between; width:100%; max-width:1100px; margin:0 auto; padding: 0 24px; }
 .brand-row { flex: 1 1 auto; }
 .user-dd { position: relative; }
@@ -96,7 +107,7 @@ watch(() => auth.token, () => {
 .dropdown .btn { width:100%; text-align:center; border-radius:10px; }
 
 /* Hamburger only on small screens */
-.hamburger { display:none; height:36px; background:#1b2130; border:1px solid #293140; border-radius:8px; align-items:center; justify-content:center; gap:8px; padding:0 10px; }
+.hamburger { display:none; height:36px; background:#1b2130; border:1px solid #293140; border-radius:10px; align-items:center; justify-content:center; gap:8px; padding:0 10px; box-shadow: 0 6px 16px rgba(124,92,255,.18); }
 .hamburger .bars span { display:block; width:18px; height:2px; background:#e6e6e6; }
 .hamburger .bars { display:inline-flex; flex-direction:column; gap:3px; }
 .hamburger .user-mobile-name { font-weight:600; color:#e6e6e6; max-width:110px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
@@ -107,12 +118,24 @@ watch(() => auth.token, () => {
 
 /* Sidebar */
 .backdrop { position: fixed; inset:0; background: rgba(0,0,0,.45); z-index: 2200; }
-.sidebar { position: fixed; top:0; right:-320px; width: 280px; height:100%; background:#0f131b; border-left:1px solid #223; z-index: 2300; transition: right .2s ease; display:flex; flex-direction:column; }
-.sidebar.on { right:0; }
-.sidebar-header { padding: 16px; font-weight: 700; border-bottom:1px solid #223; }
+.sidebar { position: fixed; top:0; left:0; right:0; width: 100vw; height:100vh; background:#0f131b; z-index: 2300; transform: translateX(100%); transition: transform .25s ease; display:flex; flex-direction:column; overflow:auto; }
+.sidebar.on { transform: translateX(0); }
+.sidebar-header { padding: 16px; font-weight: 700; border-bottom:1px solid #223; display:flex; align-items:center; justify-content:space-between; }
+.close-btn { 
+  appearance: none; border:1px solid #293140; background:#1b2130; color:#e6e6e6; 
+  padding:6px 10px; border-radius:10px; cursor:pointer; 
+  box-shadow: 0 4px 12px rgba(0,0,0,.25); transition: filter .12s ease, transform .12s ease; 
+}
+.close-btn:hover { filter: brightness(1.06); }
+.close-btn:active { transform: translateY(1px); }
 .sidebar-nav { display:flex; flex-direction:column; padding: 12px; gap:8px; }
 .side-link { display:block; padding:10px 12px; border:1px solid #223; border-radius:8px; background:#1b2130; color:#e6e6e6; text-align:center; }
 .side-link.danger { background:#a33; border-color:#a33; }
+
+/* Sidebar visible solo en mobile */
+@media (min-width: 761px) {
+  .backdrop, .sidebar { display:none !important; }
+}
 </style>
 
 

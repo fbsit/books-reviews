@@ -58,10 +58,10 @@ function onDocClick(e: MouseEvent) {
 
 <style>
 .search { width: 100%; max-width: 1280px; margin: 24px auto 0; padding: 0 12px; }
-.search-group { position: relative; display: flex; align-items: stretch; width: 100%; background: #ffffff; border-radius: 999px; padding: 6px; border: 1px solid rgba(0,0,0,0.06); box-shadow: 0 10px 18px rgba(0,0,0,.12), 0 0 0 6px rgba(42, 199, 199, .08); }
+.search-group { position: relative; display: flex; align-items: stretch; width: 100%; background: #ffffff; border-radius: 16px; padding: 6px; border: 1px solid rgba(0,0,0,0.06); box-shadow: 0 10px 18px rgba(0,0,0,.12), 0 0 0 6px rgba(124, 92, 255, .18); }
 .search-input { flex: 1; border: none; background: transparent; color: #1a2b34; font-size: 16px; padding: 10px 14px 10px 14px; outline: none; }
 .search-input::placeholder { color: #6e8594; }
-.search-btn { border: none; padding: 10px 18px; border-radius: 999px; background: linear-gradient(180deg, #0c5c5c, #0a4444); color: #fff; font-weight: 600; }
+.search-btn { border: none; padding: 10px 18px; border-radius: 12px; background: linear-gradient(135deg, #7c5cff, #00d4ff); color: #fff; font-weight: 700; box-shadow: 0 6px 18px rgba(124,92,255,.25); }
 .search-suggest { position:absolute; top: calc(100% + 8px); left:0; right:0; border:1px solid #d7e0e6; background:#ffffff; border-radius:12px; padding:6px; display:flex; flex-direction:column; gap:4px; box-shadow:0 12px 24px rgba(0,0,0,.15); z-index: 30; }
 .suggest-item { width:100%; text-align:left; background:transparent; color:#1a2b34; border:none; padding:10px 12px; border-radius:8px; }
 .suggest-item:hover { background:#f4f7f9; }

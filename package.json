@@ -1,6 +1,8 @@
 {
-  "dependencies": {
-    "moleculer-db-adapter-mongo": "^0.4.21",
-    "node-fetch": "2"
+  "name": "books-reviews-monorepo",
+  "private": true,
+  "scripts": {
+    "backend": "cd apps/backend-moleculer && yarn dev",
+    "frontend": "cd apps/frontend-nuxt && yarn dev"
   }
 }

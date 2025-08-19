@@ -62,7 +62,7 @@ onMounted(() => {
 
 <style scoped>
 .hero { position:relative; width: 100%; display: flex; justify-content: center; }
-.hero-img { width: 100%; max-width: 1100px; height: auto; border-radius: 16px; border: 1px solid #223; }
+.hero-img { width: 100%; max-width: 1100px; height: auto; border-radius: 20px; border: 1px solid rgba(124,92,255,.25); box-shadow: 0 20px 50px rgba(124,92,255,.15); }
 .hero-overlay { position:absolute; inset:0; display:none; flex-direction:column; justify-content:center; align-items:center; padding: 16px; text-align:center; }
 .hero-title { margin:0; color:#ffffff; text-shadow: 0 2px 10px rgba(0,0,0,.4); font-size: 28px; }
 .hero-sub { margin-top:6px; color:#e6e6e6; text-shadow: 0 2px 8px rgba(0,0,0,.35); font-size: 14px; }

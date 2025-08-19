@@ -22,20 +22,18 @@ Aplicación full‑stack para buscar libros, gestionar una biblioteca personal y
 - Frontend
   - `NUXT_PUBLIC_API_BASE` (por defecto: `http://localhost:3001`)
 
-### Instalación
+### Instalación y ejecución rápida
 
 1) Backend
 ```bash
-cd apps/backend-moleculer
-yarn install
+cd apps/backend-moleculer && yarn install
 # Windows PowerShell
 $env:MONGO_URI="mongodb://127.0.0.1:27017/booksreviews"; $env:PORT=3001; yarn dev
 ```
 
 2) Frontend
 ```bash
-cd apps/frontend-nuxt
-yarn install
+cd apps/frontend-nuxt && yarn install
 yarn dev
 ```
 
@@ -84,14 +82,10 @@ El frontend guarda `auth.token` y `auth.user` en `localStorage` y los inyecta co
   - `docs.service.js`: OpenAPI JSON + UI.
   - `mixins/db.mixin.js`: acceso MongoDB (colecciones `books`, `users`, `searches`).
 
-### Scripts útiles
+### Scripts útiles (raíz)
 
-- Backend
-  - `yarn dev`: desarrollo con hot reload y REPL
-  - `yarn start`: producción (runner)
-  - `yarn cli`: REPL conectado
-- Frontend
-  - `yarn dev` | `yarn build` | `yarn preview`
+- `yarn backend`: inicia el backend (usa variables desde `.env`)
+- `yarn frontend`: inicia el frontend en `http://localhost:3000`
 
 ### Flujo de uso
 

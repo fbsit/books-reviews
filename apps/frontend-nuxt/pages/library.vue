@@ -23,15 +23,15 @@
         </label>
         <button class="btn" @click="onSearch">Buscar</button>
       </div>
-      <button class="btn toggle-mobile" @click="openFilters = true">Filtros</button>
+      <button class="btn toggle-mobile" @click="openFiltersUI">Filtros</button>
     </div>
 
     <!-- Mobile filters sidebar -->
-    <div v-if="openFilters" class="backdrop" @click="openFilters=false"></div>
-    <aside class="filters-drawer" :class="{ on: openFilters }">
+    <div v-if="isFiltersOpen" class="backdrop" @click="closeFiltersUI"></div>
+    <aside v-if="isFiltersOpen" class="filters-drawer on">
       <div class="drawer-head">
         <div>Filtros</div>
-        <button class="btn secondary" @click="openFilters=false">Cerrar</button>
+        <button class="btn secondary" @click="closeFiltersUI">Cerrar</button>
       </div>
       <div class="drawer-body">
         <input v-model="term" class="input" placeholder="Buscar por título o autor" />
@@ -60,7 +60,7 @@
           <NuxtLink class="icon-btn" :to="`/book/${encodeURIComponent(b.id)}`" title="Ver/Editar" aria-label="Ver/Editar">
             <svg viewBox="0 0 24 24"><path fill="currentColor" d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1.003 1.003 0 0 0 0-1.42l-2.34-2.34a1.003 1.003 0 0 0-1.42 0l-1.83 1.83 3.75 3.75 1.84-1.82z"/></svg>
           </NuxtLink>
-          <button class="icon-btn danger" @click="confirmDelete(b)" title="Eliminar" aria-label="Eliminar">
+          <button class="icon-btn danger" @click="askDelete(b)" title="Eliminar" aria-label="Eliminar">
             <svg viewBox="0 0 24 24"><path fill="currentColor" d="M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
           </button>
         </div>
@@ -75,6 +75,15 @@
         </div>
       </div>
     </div>
+    <ConfirmModal 
+      :open="confirmOpen" 
+      title="Eliminar libro"
+      :message="confirmMessage"
+      confirm-text="Eliminar"
+      cancel-text="Cancelar"
+      @confirm="confirmDeleteSelected"
+      @cancel="confirmOpen=false"
+    />
 
     
     </template>
@@ -85,6 +94,8 @@
 import { ref, computed, onMounted } from 'vue'
 import { useLibraryStore, type LibraryBook } from './../stores/library'
 import { useAuthStore } from './../stores/auth'
+import { useUiStore } from './../stores/ui'
+import ConfirmModal from '../components/molecules/ConfirmModal.vue'
 
 const store = useLibraryStore()
 const auth = useAuthStore()
@@ -92,6 +103,13 @@ const term = ref('')
 const order = ref<'asc' | 'desc'>('desc')
 const excludeNoReview = ref(false)
 const openFilters = ref(false)
+const ui = useUiStore()
+const confirmOpen = ref(false)
+const selectedBook = ref<LibraryBook | null>(null)
+const confirmMessage = computed(() => {
+  const t = selectedBook.value?.title || ''
+  return `¿Eliminar "${t}" de tu biblioteca? Esta acción no se puede deshacer.`
+})
 
 onMounted(() => {
   auth.hydrateFromStorage()
@@ -102,13 +120,19 @@ onMounted(() => {
 
 const filtered = computed(() => store.books)
 const isLoggedIn = computed(() => Boolean(auth.token))
+const isFiltersOpen = computed(() => ui.activeSidebar === 'filters')
 
 // edición ahora se gestiona en la vista de detalle
 
-async function confirmDelete(b: LibraryBook) {
-  const ok = window.confirm('¿Eliminar libro? Esta acción no se puede deshacer.')
-  if (!ok) return
-  try { await store.deleteBook(b.id) } catch {}
+function askDelete(b: LibraryBook) {
+  selectedBook.value = b
+  confirmOpen.value = true
+}
+
+async function confirmDeleteSelected() {
+  if (!selectedBook.value) return
+  try { await store.deleteBook(selectedBook.value.id) } catch {}
+  finally { confirmOpen.value = false; selectedBook.value = null }
 }
 
 async function onSearch() {
@@ -117,6 +141,16 @@ async function onSearch() {
     order: order.value,
     excludeNoReview: excludeNoReview.value || undefined
   })
+}
+
+function openFiltersUI() {
+  ui.openSidebar('filters')
+  openFilters.value = true
+}
+
+function closeFiltersUI() {
+  openFilters.value = false
+  ui.closeSidebar()
 }
 </script>
 
@@ -130,11 +164,15 @@ async function onSearch() {
 }
 
 .backdrop { position: fixed; inset:0; background: rgba(0,0,0,.45); z-index: 2200; }
-.filters-drawer { position: fixed; top:0; right:-320px; width: 320px; height:100%; background:#0f131b; border-left:1px solid #223; z-index: 2300; transition:right .2s ease; display:flex; flex-direction:column; }
-.filters-drawer.on { right:0; }
+.filters-drawer { position: fixed; top:0; right: calc(-1 * var(--drawer-w, 320px)); width: var(--drawer-w, 320px); height:100vh; background:#0f131b; border-left:1px solid #223; z-index: 2300; transition:right .22s ease; display:flex; flex-direction:column; visibility:hidden; pointer-events:none; overflow:auto; }
+.filters-drawer.on { right:0; visibility:visible; pointer-events:auto; }
+@media (max-width: 760px) {
+  .filters-drawer { left:0; right:0; width:100vw; border-left:none; border-right:none; transform: translateX(100%); transition: transform .25s ease; visibility:hidden; pointer-events:none; }
+  .filters-drawer.on { transform: translateX(0); visibility:visible; pointer-events:auto; }
+}
 .drawer-head { display:flex; justify-content:space-between; align-items:center; padding:12px; border-bottom:1px solid #223; }
 .drawer-body { display:flex; flex-direction:column; gap:12px; padding:12px; }
-.lib-list { display:grid; gap:20px; grid-template-columns: repeat(2, minmax(0,1fr)); }
+.lib-list { display:grid; gap:24px; grid-template-columns: repeat(2, minmax(0,1fr)); }
 @media (max-width: 900px) { .lib-list { grid-template-columns: 1fr; } }
 
 .lib-card { 
@@ -150,6 +188,7 @@ async function onSearch() {
   padding:10px 12px; 
   padding-top:16px; 
   border-radius:12px; 
+  background: radial-gradient(900px 300px at 0% 100%, rgba(124,92,255,.06), transparent 40%), #0f131b;
 }
 @media (max-width: 900px) { 
   .lib-card { 

@@ -19,7 +19,7 @@ const year = new Date().getFullYear()
 </script>
 
 <style scoped>
-.site-footer { margin-top: 48px; padding: 28px 0; border-top: 3px solid #2f80ed; background: #0f131b; }
+.site-footer { margin-top: 48px; padding: 28px 0; border-top: 3px solid #7c5cff; background: radial-gradient(800px 300px at 100% 0%, rgba(124,92,255,0.08), transparent 40%), #0f131b; }
 .footer-grid { display: grid; gap: 16px; grid-template-columns: 1fr auto auto; align-items: center; }
 .brand { font-weight: 700; margin-bottom: 6px; font-size: 18px; }
 .brand-block .muted { color:#9aa4b2; }
