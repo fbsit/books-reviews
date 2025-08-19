@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "moleculer-db-adapter-mongo": "^0.4.21",
+    "node-fetch": "2"
+  }
+}

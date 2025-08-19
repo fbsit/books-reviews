@@ -1,0 +1,11 @@
+{
+  // Nuxt 3 default extends generated tsconfig
+  "extends": "./.nuxt/tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./*"]
+    },
+    "types": ["vitest/globals", "node", "vue", "vite/client"]
+  }
+}
