@@ -11,6 +11,9 @@ interface AuthState {
 
 export const useAuthStore = defineStore('auth', {
   state: (): AuthState => ({ token: null, user: null, loading: false, error: null }),
+  persist: {
+    paths: ['token', 'user']
+  },
   actions: {
     async login(username: string, password: string) {
       this.loading = true; this.error = null

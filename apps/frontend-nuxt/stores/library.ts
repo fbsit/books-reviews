@@ -23,6 +23,9 @@ export const useLibraryStore = defineStore('library', {
     loading: false,
     error: null
   }),
+  persist: {
+    paths: ['books']
+  },
   actions: {
     serverToClient(doc: any): LibraryBook {
       return {

@@ -2,15 +2,14 @@
   <footer class="site-footer">
     <div class="container footer-grid">
       <div class="brand-block">
-        <div class="brand">Books Reviews</div>
+        <div class="brand">Nexo Books</div>
         <div class="muted">Descubre, califica y guarda tus libros favoritos.</div>
       </div>
       <nav class="links">
         <a href="https://openlibrary.org" target="_blank" rel="noopener" class="muted">OpenLibrary</a>
-        <a href="/docs" class="muted">API Docs</a>
         <a href="/library" class="muted">Mi biblioteca</a>
       </nav>
-      <div class="copy muted">© {{ year }} · Nuxt 3 + Pinia</div>
+      <div class="copy muted">© {{ year }} · Nuxt 3 + Pinia by Felipe Benitez Sura</div>
     </div>
   </footer>
 </template>

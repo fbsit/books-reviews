@@ -214,9 +214,9 @@ async function onDelete() {
 </script>
 
 <style scoped>
-.detail-grid { display:grid; grid-template-columns: 280px 1fr; gap:24px; align-items:start; }
-.cover { width:100%; }
-.cover img { width:100%; height:auto; max-height: 480px; object-fit:cover; border-radius:12px; background:#1b2130; display:block; }
+.detail-grid { display:grid; grid-template-columns: 280px 1fr; gap:24px; align-items:stretch; }
+.cover { width:100%; height:100%; }
+.cover img { width:100%; height:100%; object-fit:cover; border-radius:12px; background:#1b2130; display:block; }
 .info { display:flex; flex-direction:column; gap:12px; }
 .title { margin:0; font-size: 42px; line-height: 1.1; }
 .byline { color:#6c7a89; display:flex; align-items:center; gap:10px; }

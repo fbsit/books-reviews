@@ -2,25 +2,26 @@
   <header class="site-header">
     <div class="header-wrap">
       <NuxtLink to="/" class="stack brand-row" style="gap:8px; align-items:center;">
-        <span style="font-weight:700; font-size:18px;">Books Reviews</span>
+        <span style="font-weight:700; font-size:18px;">Nexo Books</span>
       </NuxtLink>
-      <div v-if="auth?.user" class="stack user-area" style="gap:8px; align-items:center; position: relative;" ref="menuRef">
+      <div v-if="auth?.user" class="stack user-area" style="gap:8px; align-items:center;" ref="menuRef">
         <!-- Desktop: single dropdown button "User: name" -->
-        <button class="btn secondary user-menu-btn" @click="open = !open" @keydown.escape="open=false">
-          <span class="user-label">User: {{ usernameDisplay }}</span>
-          <svg class="caret" :class="{ up: open }" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M7 10l5 5 5-5z"/></svg>
-        </button>
+        <div class="user-dd">
+          <button class="btn secondary user-menu-btn" @click="open = !open" @keydown.escape="open=false">
+            <span class="user-label">User: {{ usernameDisplay }}</span>
+            <svg class="caret" :class="{ up: open }" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M7 10l5 5 5-5z"/></svg>
+          </button>
+          <transition name="fade-slide">
+            <div v-if="open" class="dropdown">
+              <NuxtLink to="/library" class="btn">Mi biblioteca</NuxtLink>
+              <button class="btn danger" @click="onLogout">Cerrar sesión</button>
+            </div>
+          </transition>
+        </div>
         <!-- Mobile: hamburger opens sidebar -->
         <button class="hamburger" @click="sidebar = true" aria-label="Abrir menú" >
           <span></span><span></span><span></span>
         </button>
-
-        <transition name="fade-slide">
-          <div v-if="open" class="dropdown">
-            <NuxtLink to="/library" class="btn">Mi biblioteca</NuxtLink>
-            <button class="btn danger" @click="onLogout">Cerrar sesión</button>
-          </div>
-        </transition>
       </div>
       <div v-else class="stack" style="gap:12px;">
         <NuxtLink to="/login" class="btn">Login</NuxtLink>
@@ -65,14 +66,15 @@ async function onLogout() { await auth.logout(); navigateTo('/') }
 </script>
 
 <style scoped>
-.site-header { padding: 20px 0; }
-.header-wrap { display:flex; align-items:center; justify-content: space-between; width:100%; margin:0; padding: 0 24px; }
+.site-header { padding: 20px 0; position: relative; z-index: 300; }
+.header-wrap { display:flex; align-items:center; justify-content: space-between; width:100%; max-width:1100px; margin:0 auto; padding: 0 24px; }
 .brand-row { flex: 1 1 auto; }
+.user-dd { position: relative; }
 .user-menu-btn { display:inline-flex; align-items:center; gap:8px; height:36px; padding:0 12px; }
 .user-label { white-space:nowrap; }
 .caret { width:14px; height:14px; transition: transform .15s ease; }
 .caret.up { transform: rotate(180deg); }
-.dropdown { position:absolute; top: 42px; right: 0; padding:8px; gap:8px; display:flex; flex-direction:column; width: 180px; border:1px solid #223; background:#0f131b; border-radius: 10px; box-shadow: 0 10px 20px rgba(0,0,0,0.35); }
+.dropdown { position:absolute; top: calc(100% + 8px); right: 0; padding:8px; gap:8px; display:flex; flex-direction:column; width: 200px; border:1px solid #223; background:#0f131b; border-radius: 10px; box-shadow: 0 10px 20px rgba(0,0,0,0.35); z-index: 999; }
 .fade-slide-enter-active, .fade-slide-leave-active { transition: all .15s ease; }
 .fade-slide-enter-from, .fade-slide-leave-to { opacity: 0; transform: translateY(-6px); }
 

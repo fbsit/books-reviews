@@ -25,6 +25,9 @@ export const useSearchStore = defineStore('search', {
     error: null,
     history: []
   }),
+  persist: {
+    paths: ['query', 'history']
+  },
   actions: {
     setQuery(q: string) {
       this.query = q

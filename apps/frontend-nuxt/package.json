@@ -13,7 +13,8 @@
   "dependencies": {
     "@pinia/nuxt": "^0.11.2",
     "nuxt": "^3.12.4",
-    "pinia": "^3.0.3"
+    "pinia": "^3.0.3",
+    "pinia-plugin-persistedstate": "^3.2.1"
   },
   "devDependencies": {
     "jsdom": "^26.1.0",

@@ -1,6 +1,11 @@
 <template>
   <main class="container">
     <h1>Mi biblioteca</h1>
+    <div v-if="!isLoggedIn" class="card" style="margin:8px 0; display:flex; align-items:center; justify-content:space-between; gap:12px;">
+      <span>Debes iniciar sesión para ver tu biblioteca.</span>
+      <NuxtLink class="btn secondary" to="/login">Iniciar sesión</NuxtLink>
+    </div>
+    <template v-else>
     <!-- Desktop filters inline -->
     <div class="card stack filters desktop" style="gap:12px; align-items:center;">
       <input v-model="term" class="input" placeholder="Buscar por título o autor" />
@@ -72,25 +77,31 @@
     </div>
 
     
-
+    </template>
   </main>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useLibraryStore, type LibraryBook } from './../stores/library'
+import { useAuthStore } from './../stores/auth'
 
 const store = useLibraryStore()
+const auth = useAuthStore()
 const term = ref('')
 const order = ref<'asc' | 'desc'>('desc')
 const excludeNoReview = ref(false)
 const openFilters = ref(false)
 
 onMounted(() => {
-  store.fetchLibrary()
+  auth.hydrateFromStorage()
+  if (auth.token) {
+    store.fetchLibrary()
+  }
 })
 
 const filtered = computed(() => store.books)
+const isLoggedIn = computed(() => Boolean(auth.token))
 
 // edición ahora se gestiona en la vista de detalle
 
@@ -122,16 +133,15 @@ async function onSearch() {
 .filters-drawer.on { right:0; }
 .drawer-head { display:flex; justify-content:space-between; align-items:center; padding:12px; border-bottom:1px solid #223; }
 .drawer-body { display:flex; flex-direction:column; gap:12px; padding:12px; }
-.lib-list { display:grid; gap:16px; grid-template-columns: repeat(3, minmax(0,1fr)); }
-@media (max-width: 1200px) { .lib-list { grid-template-columns: repeat(2, minmax(0,1fr)); } }
-@media (max-width: 720px) { .lib-list { grid-template-columns: 1fr; } }
+.lib-list { display:grid; gap:20px; grid-template-columns: repeat(2, minmax(0,1fr)); }
+@media (max-width: 900px) { .lib-list { grid-template-columns: 1fr; } }
 
-.lib-card { position:relative; display:flex; gap:12px; align-items:flex-start; padding:14px 16px; padding-top:22px; min-height:118px; }
+.lib-card { position:relative; display:grid; grid-template-columns: 30% 1fr; gap:12px; align-items:stretch; padding:14px 16px; padding-top:22px; min-height:160px; border-radius:12px; }
 .lib-actions-top { position: absolute; top: 6px; right: 6px; display:flex; gap:6px; }
 .icon-btn { width:28px; height:28px; display:inline-flex; align-items:center; justify-content:center; border-radius:8px; background:#1b2130; border:1px solid #293140; }
 .icon-btn svg { width:16px; height:16px; }
 .icon-btn.danger { background:#a33; border-color:#a33; }
-.lib-cover { width:72px; height:100px; object-fit:cover; border-radius:8px; background:#1b2130; flex: 0 0 auto; }
+.lib-cover { width:100%; height:100%; object-fit:cover; border-radius:8px; background:#1b2130; }
 .lib-meta { display:flex; flex-direction:column; gap:4px; flex:1 1 auto; min-width:0; padding-right:84px; }
 .lib-title { font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .lib-actions { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }

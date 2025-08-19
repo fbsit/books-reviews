@@ -1,7 +1,7 @@
 <template>
   <main class="container wide">
     <section class="hero">
-      <img src="/banner.svg" alt="Books Reviews" class="hero-img" />
+      <img src="/banner.svg" alt="Nexo Books" class="hero-img" />
     </section>
     <section class="stack col" style="align-items:center;">
       <SearchBox
