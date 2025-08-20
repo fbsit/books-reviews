@@ -63,8 +63,15 @@ module.exports = function(collection) {
 		schema.adapter = new DbService.MemoryAdapter();
 	} else {
 		const MongoAdapter = require("moleculer-db-adapter-mongo");
-		const uri = process.env.MONGO_URI || "mongodb://127.0.0.1:27017/booksreviews";
-		schema.adapter = new MongoAdapter(uri);
+		const uri = process.env.MONGO_URI || "mongodb://127.0.0.1:27017";
+		const dbName = process.env.MONGO_DB || "app";
+		const options = {
+			serverSelectionTimeoutMS: 5000,
+			useNewUrlParser: true,
+			useUnifiedTopology: true,
+			dbName
+		};
+		schema.adapter = new MongoAdapter(uri, options);
 		schema.collection = collection;
 	}
 
