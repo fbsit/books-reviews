@@ -1,6 +1,7 @@
 "use strict";
 
 const DbMixin = require("../mixins/db.mixin");
+const fetchFn = (global.fetch) ? global.fetch : require('node-fetch');
 
 /**
  * @typedef {import('moleculer').ServiceSchema} ServiceSchema
@@ -78,7 +79,7 @@ module.exports = {
                 }
 
                 const workUrl = `https://openlibrary.org${key}.json`;
-                const res = await fetch(workUrl);
+                const res = await fetchFn(workUrl);
                 if (!res.ok) return null;
                 const data = await res.json();
                 let title = data.title;
@@ -129,7 +130,7 @@ module.exports = {
                 try {
                     const fetch = (global.fetch) ? global.fetch : require('node-fetch');
                     const url = `https://openlibrary.org/search.json?q=${encodeURIComponent(q)}`;
-                    const res = await fetch(url);
+                    const res = await fetchFn(url);
                     const json = await res.json();
                     const docs = Array.isArray(json?.docs) ? json.docs.slice(0, 10) : [];
 
