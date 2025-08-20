@@ -21,7 +21,8 @@
     "moleculer": "^0.14.26",
     "moleculer-db": "^0.8.20",
     "moleculer-db-adapter-mongo": "^0.4.15",
-    "moleculer-web": "^0.10.4"
+    "moleculer-web": "^0.10.4",
+    "node-fetch": "^2.6.7"
   },
   "engines": {
     "node": ">= 16.x.x"

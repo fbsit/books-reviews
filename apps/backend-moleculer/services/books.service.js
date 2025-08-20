@@ -127,6 +127,7 @@ module.exports = {
                 }
 
                 try {
+                    const fetch = (global.fetch) ? global.fetch : require('node-fetch');
                     const url = `https://openlibrary.org/search.json?q=${encodeURIComponent(q)}`;
                     const res = await fetch(url);
                     const json = await res.json();
