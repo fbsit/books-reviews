@@ -14,7 +14,7 @@ module.exports = {
 	name: "api",
 	mixins: [ApiGateway],
 
-	/** @type {ApiSettingsSchema} More info about settings: https://moleculer.services/docs/0.14/moleculer-web.html */
+	/** @type {ApiSettingsSchema}  */
 	settings: {
 		// Exposed port
 		port: process.env.PORT || 3001,
@@ -22,7 +22,7 @@ module.exports = {
 		// Exposed IP
 		ip: "0.0.0.0",
 
-		// Global Express middlewares. More info: https://moleculer.services/docs/0.14/moleculer-web.html#Middlewares
+		// Global Express middlewares.
 		use: [
 			(req, res, next) => {
 				const start = Date.now();
@@ -40,7 +40,7 @@ module.exports = {
 			{
 				path: "/api",
 				cors: {
-					origin: ["*"],
+					origin: [process.env.CORS_ORIGIN || "*"],
 					methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
 					allowedHeaders: ["Content-Type", "Authorization"],
 					credentials: false,
